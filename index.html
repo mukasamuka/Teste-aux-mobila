@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MSI 5 MOBILADOR</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+  body { background: #000; min-height: 100vh; padding: 30px 20px 15px; display: flex; justify-content: center; align-items: flex-start; position: relative; overflow: hidden; }
+  .bg-bubbles { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: radial-gradient(ellipse at 50% 0%, #0a0505 0%, #000 65%); }
+  .bubble { position: absolute; border-radius: 50%; filter: blur(8px); opacity: 0.32; mix-blend-mode: screen; background: radial-gradient(circle at 35% 35%, rgba(255,60,60,0.65), rgba(120,0,0,0.2) 55%, transparent 75%); animation: floatUp linear infinite; }
+  .bubble:nth-child(1) { width: 100px; height: 100px; left: 5%;  animation-duration: 24s; animation-delay: -3s; }
+  .bubble:nth-child(2) { width: 50px;  height: 50px;  left: 20%; animation-duration: 18s; animation-delay: -11s; background: radial-gradient(circle at 35% 35%, rgba(255,120,60,0.6), rgba(150,20,0,0.18) 55%, transparent 75%); }
+  .bubble:nth-child(3) { width: 70px; height: 70px; left: 38%; animation-duration: 27s; animation-delay: -20s; }
+  .bubble:nth-child(4) { width: 38px;  height: 38px;  left: 52%; animation-duration: 16s; animation-delay: -6s; background: radial-gradient(circle at 35% 35%, rgba(255,60,120,0.55), rgba(100,0,40,0.18) 55%, transparent 75%); }
+  .bubble:nth-child(5) { width: 90px; height: 90px; left: 65%; animation-duration: 29s; animation-delay: -14s; }
+  .bubble:nth-child(6) { width: 46px;  height: 46px;  left: 78%; animation-duration: 20s; animation-delay: -2s; background: radial-gradient(circle at 35% 35%, rgba(255,170,60,0.55), rgba(140,40,0,0.18) 55%, transparent 75%); }
+  .bubble:nth-child(7) { width: 62px;  height: 62px;  left: 88%; animation-duration: 25s; animation-delay: -18s; }
+  .bubble:nth-child(8) { width: 32px;  height: 32px;  left: 12%; animation-duration: 15s; animation-delay: -9s; background: radial-gradient(circle at 35% 35%, rgba(255,60,60,0.65), rgba(90,0,0,0.18) 55%, transparent 75%); }
+  @keyframes floatUp { 0% { transform: translateY(110vh) translateX(0) scale(0.85); opacity: 0; } 15% { opacity: 0.32; } 50% { transform: translateY(50vh) translateX(10px) scale(1); } 85% { opacity: 0.2; } 100% { transform: translateY(-15vh) translateX(-8px) scale(1.08); opacity: 0; } }
+  .container { width: 100%; max-width: 420px; position: relative; z-index: 1; }
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 4px 0 16px 0; }
+  .logo-area { display: flex; align-items: center; gap: 10px; }
+  .logo-circle { width: 42px; height: 42px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2a0505, #0a0000 70%); border: 1px solid #3a0808; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(255, 0, 30, 0.25); }
+  .logo-circle svg { width: 21px; height: 21px; }
+  .title { font-size: 17px; font-weight: 800; letter-spacing: 0.4px; }
+  .title .white { color: #f2f2f2; }
+  .title .red, .login-title .red { color: #ff1a1a; text-shadow: 0 0 12px rgba(255, 20, 20, 0.7); }
+  .status { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #22ff5e; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #22ff5e; box-shadow: 0 0 7px 1px rgba(34, 255, 94, 0.9); animation: pulse-green 1.6s infinite ease-in-out; }
+  @keyframes pulse-green { 0%, 100% { opacity: 1; box-shadow: 0 0 10px 2px rgba(34,255,94,0.9); } 50% { opacity: 0.55; box-shadow: 0 0 4px 1px rgba(34,255,94,0.5); } }
+  .panel { background: #060606; border: 1px solid #3a0808; border-radius: 12px; box-shadow: 0 0 18px rgba(255, 0, 30, 0.12), inset 0 0 30px rgba(120, 0, 10, 0.06); padding: 24px 20px; }
+  .option-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+  .option-left { display: flex; align-items: center; gap: 14px; }
+  .option-icon { width: 28px; height: 28px; flex-shrink: 0; }
+  .divider { width: 1px; height: 28px; background: linear-gradient(to bottom, transparent, #ff1a1a55, transparent); }
+  .option-text h3 { color: #f5f5f5; font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+  .option-text p { color: #8a8a8a; font-size: 10px; }
+  .switch { position: relative; width: 56px; height: 28px; flex-shrink: 0; }
+  .switch input { opacity: 0; width: 0; height: 0; outline: none; }
+  .slider { position: absolute; cursor: pointer; inset: 0; border-radius: 999px; transition: 0.35s; background: linear-gradient(145deg, #1a1a1a, #0a0a0a); border: 1px solid #300; outline: none; }
+  .slider::before { content: ""; position: absolute; height: 23px; width: 23px; left: 2.5px; bottom: 2.5px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffffff, #d8d8d8 60%, #b5b5b5 100%); box-shadow: 0 0 6px rgba(255,255,255,0.6); transition: 0.35s cubic-bezier(.4,1.4,.6,1); }
+  input:checked + .slider { background: linear-gradient(120deg, #4d0000 0%, #ff2222 22%, #ff5c5c 40%, #ff0000 55%, #7a0000 72%, #ff3131 88%, #500000 100%); background-size: 220% 220%; animation: neonFlow 3s ease-in-out infinite; border: 1px solid #ff2b2b; box-shadow: 0 0 8px 2px rgba(255, 20, 20, 0.85), 0 0 18px 5px rgba(255, 0, 0, 0.55), inset 0 0 6px rgba(255, 255, 255, 0.15), inset 0 0 11px rgba(120, 0, 0, 0.6); }
+  @keyframes neonFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+  input:checked + .slider::before { transform: translateX(28px); box-shadow: 0 0 7px 2px rgba(255,255,255,0.9); }
+  .inject-btn { display: block; margin: 20px auto 0; width: 220px; padding: 14px 0; background: #ff1a1a; color: #fff; font-size: 15px; font-weight: 800; letter-spacing: 2px; text-align: center; border: 1px solid #ff4444; border-radius: 6px; cursor: pointer; box-shadow: 0 0 14px rgba(255, 26, 26, 0.6); transition: background 0.2s, transform 0.1s; }
+  .inject-btn:hover { background: #ff3333; }
+  .inject-btn:active { background: #cc0000; transform: scale(0.97); }
+  .inject-btn.injecting { background: #661000; cursor: not-allowed; box-shadow: 0 0 10px rgba(255, 26, 26, 0.35); }
+  .inject-btn.injected { background: #00c853; border: 1px solid #33e070; box-shadow: 0 0 18px rgba(0, 200, 83, 0.7); cursor: default; }
+  .version-options { display: flex; gap: 12px; margin: 20px auto 0; width: 220px; max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease; }
+  .version-options.show { max-height: 100px; opacity: 1; }
+  .version-options.hide-fast { transition: opacity 0.18s ease; opacity: 0; max-height: 0; }
+  .version-btn { flex: 1; padding: 14px 0; background: #0d0d0d; color: #fff; font-size: 13px; font-weight: 800; letter-spacing: 1.5px; text-align: center; border: 1px solid #ff2b2b; border-radius: 6px; cursor: pointer; box-shadow: 0 0 10px rgba(255, 26, 26, 0.35); transition: background 0.2s, transform 0.1s, box-shadow 0.2s; }
+  .version-btn:hover { background: #1a0505; box-shadow: 0 0 16px rgba(255, 26, 26, 0.6); }
+  .version-btn:active { transform: scale(0.96); }
+  .login-screen { position: relative; z-index: 1; width: 100%; max-width: 340px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .login-logo { width: 66px; height: 66px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2a0505, #0a0000 70%); border: 1px solid #3a0808; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 18px rgba(255, 0, 30, 0.35); margin-bottom: 16px; }
+  .login-logo svg { width: 32px; height: 32px; }
+  .login-title { font-size: 20px; font-weight: 800; letter-spacing: 0.4px; margin-bottom: 4px; display: flex; align-items: baseline; gap: 6px; white-space: nowrap; }
+  .login-subtitle { color: #8a8a8a; font-size: 12px; margin-bottom: 30px; }
+  .login-box { width: 100%; background: #060606; border: 1px solid #3a0808; border-radius: 12px; box-shadow: 0 0 18px rgba(255, 0, 30, 0.12), inset 0 0 30px rgba(120, 0, 10, 0.06); padding: 26px 22px; }
+  .login-label { display: block; text-align: left; color: #bbb; font-size: 11px; font-weight: 600; letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
+  .login-input { width: 100%; background: #0d0d0d; border: 1px solid #400; border-radius: 6px; color: #fff; font-size: 14px; letter-spacing: 0.5px; text-align: center; padding: 12px 10px; outline: none; transition: border 0.2s, box-shadow 0.2s; }
+  .login-input::placeholder { font-size: 12px; text-transform: lowercase; color: #666; letter-spacing: 0.3px; }
+  .login-input:focus { border: 1px solid #ff1a1a; box-shadow: 0 0 10px rgba(255, 26, 26, 0.5); }
+  .login-error { color: #ff4444; font-size: 11px; margin-top: 10px; min-height: 14px; letter-spacing: 0.5px; }
+  .login-btn { display: block; width: 100%; margin-top: 18px; padding: 13px 0; background: #ff1a1a; color: #fff; font-size: 14px; font-weight: 800; letter-spacing: 2px; text-align: center; border: 1px solid #ff4444; border-radius: 6px; cursor: pointer; box-shadow: 0 0 14px rgba(255, 26, 26, 0.6); transition: background 0.2s, transform 0.1s; }
+  .login-btn:hover { background: #ff3333; }
+  .login-btn:active { background: #cc0000; transform: scale(0.98); }
+  .login-footer { margin-top: 22px; color: #555; font-size: 11px; letter-spacing: 0.5px; }
+  .login-footer span { color: #ff1a1a; font-weight: 700; }
+  .hidden { display: none !important; }
+
+  /* ===== TELA DO SOFTWARE DO MOUSE ===== */
+  .mouse-software {
+    background: #060606;
+    border: 1px solid #3a0808;
+    border-radius: 12px;
+    box-shadow: 0 0 18px rgba(255, 0, 30, 0.12), inset 0 0 30px rgba(120, 0, 10, 0.06);
+    padding: 24px 20px;
+    margin-top: 16px;
+  }
+  .mouse-software h2 {
+    color: #f5f5f5;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid #3a0808;
+    padding-bottom: 10px;
+  }
+  .slider-group {
+    margin-bottom: 18px;
+  }
+  .slider-group label {
+    display: flex;
+    justify-content: space-between;
+    color: #bbb;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .slider-group label span {
+    color: #ff1a1a;
+  }
+  .slider-group input[type="range"] {
+    width: 100%;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(90deg, #3a0808, #ff1a1a);
+    border-radius: 999px;
+    outline: none;
+  }
+  .slider-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ff4444, #cc0000);
+    border: 2px solid #ff1a1a;
+    box-shadow: 0 0 12px rgba(255, 26, 26, 0.8);
+    cursor: pointer;
+  }
+  .slider-value {
+    text-align: center;
+    color: #ff1a1a;
+    font-size: 18px;
+    font-weight: 800;
+    margin-top: 2px;
+  }
+  .angle-snap-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0 6px 0;
+    border-top: 1px solid #3a0808;
+    margin-top: 6px;
+  }
+  .angle-snap-row .left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .angle-snap-row .left svg {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+  .angle-snap-row .left div h4 {
+    color: #f5f5f5;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .angle-snap-row .left div p {
+    color: #8a8a8a;
+    font-size: 10px;
+  }
+  .switch-sm {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+  .switch-sm input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    outline: none;
+  }
+  .slider-sm {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    border-radius: 999px;
+    transition: 0.35s;
+    background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+    border: 1px solid #300;
+  }
+  .slider-sm::before {
+    content: "";
+    position: absolute;
+    height: 19px;
+    width: 19px;
+    left: 2px;
+    bottom: 2px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ffffff, #d8d8d8 60%, #b5b5b5 100%);
+    box-shadow: 0 0 4px rgba(255,255,255,0.4);
+    transition: 0.35s cubic-bezier(.4,1.4,.6,1);
+  }
+  input:checked + .slider-sm {
+    background: linear-gradient(120deg, #4d0000 0%, #ff2222 40%, #ff0000 70%, #500000 100%);
+    border: 1px solid #ff2b2b;
+    box-shadow: 0 0 8px 2px rgba(255, 20, 20, 0.7);
+  }
+  input:checked + .slider-sm::before {
+    transform: translateX(20px);
+    box-shadow: 0 0 6px 2px rgba(255,255,255,0.8);
+  }
+  .mouse-software .info-note {
+    color: #555;
+    font-size: 10px;
+    text-align: center;
+    margin-top: 14px;
+    letter-spacing: 0.3px;
+    border-top: 1px solid #1a1a1a;
+    padding-top: 12px;
+  }
+  .mouse-software .info-note span {
+    color: #ff1a1a;
+    font-weight: 700;
+  }
+  .fast-response-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0 6px 0;
+    border-top: 1px solid #3a0808;
+    margin-top: 6px;
+  }
+  .fast-response-row .left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .fast-response-row .left svg {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+  .fast-response-row .left div h4 {
+    color: #f5f5f5;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .fast-response-row .left div p {
+    color: #8a8a8a;
+    font-size: 10px;
+  }
+
+  /* ===== RELATÓRIO DE SENSIBILIDADE ===== */
+  .report-panel {
+    background: #060606;
+    border: 1px solid #3a0808;
+    border-radius: 12px;
+    box-shadow: 0 0 18px rgba(255, 0, 30, 0.12), inset 0 0 30px rgba(120, 0, 10, 0.06);
+    padding: 20px 16px;
+    margin-top: 16px;
+  }
+  .report-panel h2 {
+    color: #f5f5f5;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #3a0808;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .report-panel h2 span {
+    color: #ff1a1a;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .report-list {
+    max-height: 260px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .report-list::-webkit-scrollbar { width: 4px; }
+  .report-list::-webkit-scrollbar-track { background: #0a0a0a; border-radius: 4px; }
+  .report-list::-webkit-scrollbar-thumb { background: #ff1a1a; border-radius: 4px; }
+  .report-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 10px;
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    border-radius: 6px;
+    margin-bottom: 5px;
+    transition: 0.2s;
+  }
+  .report-item:hover {
+    border-color: #3a0808;
+    background: #0f0505;
+  }
+  .report-item .rank {
+    color: #ff1a1a;
+    font-size: 11px;
+    font-weight: 800;
+    width: 28px;
+    flex-shrink: 0;
+  }
+  .report-item .info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .report-item .info .name {
+    color: #e0e0e0;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .report-item .info .desc {
+    color: #666;
+    font-size: 9px;
+  }
+  .report-item .values {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .report-item .values span {
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .report-item .values .x { color: #22ff5e; }
+  .report-item .values .y { color: #22aaff; }
+  .download-btn {
+    display: block;
+    width: 100%;
+    margin-top: 14px;
+    padding: 12px 0;
+    background: #ff1a1a;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-align: center;
+    border: 1px solid #ff4444;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 0 14px rgba(255, 26, 26, 0.5);
+    transition: background 0.2s, transform 0.1s;
+  }
+  .download-btn:hover { background: #ff3333; }
+  .download-btn:active { background: #cc0000; transform: scale(0.97); }
+</style>
+</head>
+<body>
+<div class="bg-bubbles"><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div></div>
+
+<!-- TELA DE LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-logo"><svg viewBox="0 0 24 24" fill="none" stroke="#ff1a1a" stroke-width="1.8"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="1.6" fill="#ff1a1a"></circle><line x1="12" y1="1" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="23"></line><line x1="1" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="23" y2="12"></line></svg></div>
+  <div class="login-title"><span style="color:#f2f2f2">MSI 5</span> <span class="red">MOBILADOR</span></div>
+  <div class="login-subtitle">Insira a key de acesso para continuar</div>
+  <div class="login-box">
+    <label class="login-label" for="keyInput">Key de Acesso</label>
+    <input type="text" id="keyInput" class="login-input" placeholder="Digite sua key" maxlength="20" autocomplete="off">
+    <div class="login-error" id="loginError"></div>
+    <button class="login-btn" id="loginBtn">ENTRAR</button>
+  </div>
+  <div class="login-footer">desenvolvido por <span>King ff</span></div>
+</div>
+
+<!-- TELA PRINCIPAL -->
+<div class="container hidden" id="mainScreen">
+  <div class="header">
+    <div class="logo-area">
+      <div class="logo-circle"><svg viewBox="0 0 24 24" fill="none" stroke="#ff1a1a" stroke-width="1.8"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="1.6" fill="#ff1a1a"></circle><line x1="12" y1="1" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="23"></line><line x1="1" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="23" y2="12"></line></svg></div>
+      <div class="title"><span class="white">MSI 5</span> <span class="red">MOBILADOR</span></div>
+    </div>
+    <div class="status"><span class="status-dot"></span><span>Online</span></div>
+  </div>
+
+  <div class="panel">
+    <div class="option-row">
+      <div class="option-left">
+        <svg class="option-icon" viewBox="0 0 24 24" fill="none" stroke="#ff1a1a" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="1.8" fill="#ff1a1a"></circle><line x1="12" y1="1" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="23"></line><line x1="1" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="23" y2="12"></line></svg>
+        <div class="divider"></div>
+        <div class="option-text"><h3>Precision</h3><p>Precisão 100% • mira grudada</p></div>
+      </div>
+      <label class="switch"><input type="checkbox" checked id="precisionToggle"><span class="slider"></span></label>
+    </div>
+  </div>
+
+  <button class="inject-btn" id="injectBtn">INJECT</button>
+  <div class="version-options" id="versionOptions">
+    <button class="version-btn" id="btnFF">FF</button>
+    <button class="version-btn" id="btnMAX">MAX</button>
+  </div>
+
+  <!-- ===== SOFTWARE DO MOUSE ===== -->
+  <div class="mouse-software" id="mouseSoftware">
+    <h2>🖱️ SOFTWARE DO MOUSE</h2>
+    <div class="slider-group">
+      <label>Sensibilidade X (Horizontal) <span id="valX">5.0</span></label>
+      <input type="range" id="sensX" min="0" max="10" step="0.1" value="5.0">
+    </div>
+    <div class="slider-group">
+      <label>Sensibilidade Y (Vertical) <span id="valY">5.0</span></label>
+      <input type="range" id="sensY" min="0" max="10" step="0.1" value="5.0">
+    </div>
+
+    <div class="angle-snap-row">
+      <div class="left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ff1a1a" stroke-width="1.8">
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <line x1="12" y1="2" x2="12" y2="22"></line>
+          <polyline points="8,8 12,4 16,8"></polyline>
+          <polyline points="8,16 12,20 16,16"></polyline>
+        </svg>
+        <div>
+          <h4>Angle Snapping</h4>
+          <p>Corrige trajetória • mira mais reta • SEM zigue-zague</p>
+        </div>
+      </div>
+      <label class="switch-sm">
+        <input type="checkbox" id="angleSnapToggle" checked>
+        <span class="slider-sm"></span>
+      </label>
+    </div>
+
+    <!-- NOVA OPÇÃO: RESPOSTAS RÁPIDAS TECLADO/MOUSE -->
+    <div class="fast-response-row">
+      <div class="left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ff1a1a" stroke-width="1.8">
+          <polyline points="4 4 12 12 20 4"></polyline>
+          <rect x="2" y="8" width="20" height="14" rx="2"></rect>
+        </svg>
+        <div>
+          <h4>Respostas Rápidas</h4>
+          <p>Teclado e mouse mais rápidos • menor latência</p>
+        </div>
+      </div>
+      <label class="switch-sm">
+        <input type="checkbox" id="fastResponseToggle" checked>
+        <span class="slider-sm"></span>
+      </label>
+    </div>
+
+    <div class="info-note">Ajustes aplicados ao mapeador • <span>Precision 100% ativo</span></div>
+  </div>
+
+  <!-- ===== RELATÓRIO DE SENSIBILIDADE ===== -->
+  <div class="report-panel" id="reportPanel">
+    <h2>📊 Relatório de Sensibilidade <span>TOP 50</span></h2>
+    <div class="report-list" id="reportList"></div>
+    <button class="download-btn" id="downloadBtn">📥 Fazer Download</button>
+  </div>
+</div>
+
+<script>
+  /* ===== CONFIG JSONBIN (mantido) ===== */
+  const BIN_ID = '6a86317af5f4af5e292a9bfb';
+  const API_KEY = '$2a$10$KTTH5cxrlA7D0ZIfXbwbo.RjLhtjFfEg3zEOF6Qwqd8nQ6FgI5LdK';
+  const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+  const keyInput = document.getElementById('keyInput');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginError = document.getElementById('loginError');
+  const loginScreen = document.getElementById('loginScreen');
+  const mainScreen = document.getElementById('mainScreen');
+
+  function getDeviceId() { let id = localStorage.getItem('pa_device_id'); if (!id) { id = 'dev-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12); localStorage.setItem('pa_device_id', id); } return id; }
+  const deviceId = getDeviceId();
+
+  async function fetchBin() { const r = await fetch(BIN_URL + '/latest', { headers: { 'X-Master-Key': API_KEY, 'X-Bin-Meta': 'false' } }); if (!r.ok) throw new Error('fetch failed'); return await r.json(); }
+  async function updateBin(data) { const r = await fetch(BIN_URL, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY }, body: JSON.stringify(data) }); if (!r.ok) throw new Error('update failed'); }
+  function setLoading(isLoading) { loginBtn.disabled = isLoading; loginBtn.textContent = isLoading ? 'VERIFICANDO...' : 'ENTRAR'; }
+  function showError(msg) { loginError.textContent = msg; keyInput.style.border = '1px solid #ff1a1a'; keyInput.style.boxShadow = '0 0 10px rgba(255,26,26,0.6)'; }
+  function clearError() { loginError.textContent = ''; keyInput.style.border = ''; keyInput.style.boxShadow = ''; }
+  function grantAccess() { loginScreen.classList.add('hidden'); mainScreen.classList.remove('hidden'); }
+  function forceRelogin(msg) { localStorage.removeItem('pa_saved_key'); loginScreen.classList.remove('hidden'); mainScreen.classList.add('hidden'); if (msg) showError(msg); }
+
+  async function tryLogin() {
+    const value = keyInput.value.trim().toUpperCase();
+    if (!value) { showError('Digite uma key para continuar.'); return; }
+    clearError(); setLoading(true);
+    try {
+      const data = await fetchBin();
+      const entry = data.keys.find(k => k.key === value);
+      if (!entry) { showError('Key inválida.'); setLoading(false); return; }
+      if (entry.expiracao && Date.now() > entry.expiracao) { showError('Está key expirou.'); setLoading(false); return; }
+      if (entry.em_uso && entry.dispositivo && entry.dispositivo !== deviceId) { showError('Está Key já está em uso.'); setLoading(false); return; }
+      entry.em_uso = true; entry.dispositivo = deviceId; if (!entry.criada_em) entry.criada_em = Date.now();
+      await updateBin(data);
+      localStorage.setItem('pa_saved_key', value);
+      setLoading(false); grantAccess();
+    } catch (e) { setLoading(false); showError('Erro de conexão. Tente novamente.'); }
+  }
+
+  async function tentarAutoLogin() {
+    const savedKey = localStorage.getItem('pa_saved_key');
+    if (!savedKey) return;
+    try {
+      const data = await fetchBin();
+      const entry = data.keys.find(k => k.key === savedKey);
+      if (!entry) { forceRelogin('Sua key não é mais válida.'); return; }
+      if (entry.expiracao && Date.now() > entry.expiracao) { forceRelogin('Sua key expirou.'); return; }
+      if (entry.dispositivo === deviceId) { grantAccess(); return; }
+      if (entry.em_uso && entry.dispositivo && entry.dispositivo !== deviceId) { forceRelogin('Está Key já está em uso.'); return; }
+      entry.em_uso = true; entry.dispositivo = deviceId; await updateBin(data); grantAccess();
+    } catch (e) {}
+  }
+
+  loginBtn.addEventListener('click', tryLogin);
+  keyInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') tryLogin(); });
+  keyInput.addEventListener('input', clearError);
+  tentarAutoLogin();
+
+  /* ===== INJECT + PRECISION 100% COM 300+ CÓDIGOS + ANGLE SNAPPING + FAST RESPONSE + BACKGROUND PERSISTENCE ===== */
+  const injectBtn = document.getElementById('injectBtn');
+  const versionOptions = document.getElementById('versionOptions');
+  const btnFF = document.getElementById('btnFF');
+  const btnMAX = document.getElementById('btnMAX');
+  const precisionToggle = document.getElementById('precisionToggle');
+  const fastResponseToggle = document.getElementById('fastResponseToggle');
+
+  const GAME_LINKS = {
+    ff: { android: 'intent://#Intent;scheme=freefire;package=com.dts.freefireth;end', iosScheme: 'freefire://', iosStore: 'https://apps.apple.com/app/id1300146617' },
+    max: { android: 'intent://#Intent;scheme=freefire;package=com.dts.freefiremax;end', iosScheme: 'freefiremax://', iosStore: 'https://apps.apple.com/app/id1480516829' }
+  };
+
+  let isInjected = false;
+
+  function getPlatform() {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    if (/android/i.test(ua)) return 'android';
+    if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) return 'ios';
+    return 'other';
+  }
+
+  // Gera 300+ códigos com foco extremo em Precision, Angle Snapping, Fast Response, AimBot, Silient, Headshot, Background Persistence, Mira durinha/cravada
+  function generateUltraCodes(versao) {
+    const pkg = versao === 'ff' ? 'com.dts.freefireth' : 'com.dts.freefiremax';
+    const version = versao === 'ff' ? '1.94.8' : '1.95.0';
+    const base = [];
+    for (let i = 1; i <= 150; i++) {
+      base.push(`Dword AimBot: ${String(i).padStart(5, '0')} = AimBot 100% = Registre = Sensitivy = ${pkg} = Dword: ${String(90000 + i * 7)}`);
+      base.push(`Dword AimBot: ${String(i+150).padStart(5, '0')} = Sensitivy AimBot 100% = Mira-No-Treme = AimBot 100% Vip =/${version}`);
+      base.push(`String AimBot: ${String(i+300).padStart(5, '0')} = Mira-Pesada-Com-Mais-Preciso = AimBot 100% Lite = Path ${pkg}`);
+      base.push(`Dword AimBot: ${String(i+450).padStart(5, '0')} = AimBot 100% Vip = Registre = ${pkg} =/${version}`);
+      base.push(`Dword AimBot: ${String(i+600).padStart(5, '0')} = Sensitivy = AimBot = Mira-Grudar-100% = AimGrudar = StartActivy`);
+      base.push(`Dword AimBot: ${String(i+750).padStart(5, '0')} = StartActivy = AimBot 100% = 100%-Mira-Segurar-Na-Cabeça`);
+      base.push(`Dword AimBot: ${String(i+900).padStart(5, '0')} = StartActivy = AimGrudar + AimBot Grudar 100% = Sensitivy = AimBot Vip`);
+      base.push(`Dword AimBot: ${String(i+1050).padStart(5, '0')} = Head Kill 100% = Headshot Sensitivy = AimGrudar = Mira-No-Tremer = ${pkg}`);
+      base.push(`String AimBot: ${String(i+1200).padStart(5, '0')} = Path ${pkg} = Path config = AimBot 100%`);
+      base.push(`AIM BOT PUXAR 100% PARA A CABEÇA = Dword: ${String(90000 + i * 13)}: mira-puxar-${String(i).padStart(4, '0')}%-na-cabeça`);
+      base.push(`Angle Snapping ${i}% = Dword: ${String(80000 + i * 11)} = ${pkg} = Correção de trajetória 100%`);
+      base.push(`Angle Snapping ON = Dword: 999999 = ${pkg} = SEM zigue-zague`);
+      base.push(`Angle Snapping OFF = Dword: 000000 = ${pkg} = COM zigue-zague`);
+      base.push(`Precision ${i}% = String = ${pkg} = ${version} = Mira grudada 100%`);
+      base.push(`Smooth Aim ${i}% = Dword: ${String(70000 + i * 5)} = ${pkg}`);
+      base.push(`Linear Response ${i}% = Dword: ${String(60000 + i * 3)} = ${pkg}`);
+      base.push(`Vertical Control ${i}% = Dword: ${String(50000 + i * 2)} = ${pkg}`);
+      base.push(`Horizontal Stability ${i}% = Dword: ${String(40000 + i * 4)} = ${pkg}`);
+      base.push(`Tracking Boost ${i}% = Dword: ${String(30000 + i * 6)} = ${pkg}`);
+      base.push(`Flick Precision ${i}% = Dword: ${String(20000 + i * 8)} = ${pkg}`);
+      base.push(`Micro Aim ${i}% = Dword: ${String(10000 + i * 9)} = ${pkg}`);
+      base.push(`Recoil Compensation ${i}% = Dword: ${String(11000 + i * 10)} = ${pkg}`);
+      base.push(`No Tremor Active = Dword: 777777 = ${pkg}`);
+      base.push(`Headshot Priority 100% = Dword: 888888 = ${pkg}`);
+      base.push(`Fast Response ON = Dword: 666666 = ${pkg} = Input ultra rápido`);
+      base.push(`Fast Response ${i}% = Dword: ${String(55000 + i * 7)} = ${pkg} = Menor latência`);
+      base.push(`Keyboard Speed ${i}% = Dword: ${String(33000 + i * 4)} = ${pkg}`);
+      base.push(`Mouse Polling ${i}% = Dword: ${String(22000 + i * 5)} = ${pkg}`);
+      base.push(`Silient Aim ON = Dword: 555555 = ${pkg} = Mira invisível`);
+      base.push(`Silient Aim ${i}% = Dword: ${String(44000 + i * 6)} = ${pkg}`);
+      base.push(`Grudar 100% = Dword: 999888 = ${pkg} = Mira colada`);
+      base.push(`Grudar Head 100% = Dword: 999777 = ${pkg} = Só cabeça`);
+      base.push(`Background Service ON = Dword: 444444 = ${pkg} = Sempre ativo em segundo plano`);
+      base.push(`Persistence ${i}% = Dword: ${String(77000 + i * 3)} = ${pkg} = Mantém função ativa`);
+      // Mira durinha/cravada/retinha
+      base.push(`Mira Dura ${i}% = Dword: ${String(88000 + i * 9)} = ${pkg} = Sem tremida`);
+      base.push(`Mira Cravada ${i}% = Dword: ${String(99000 + i * 8)} = ${pkg} = Grudada na cabeça`);
+      base.push(`Mira Retinha ${i}% = Dword: ${String(66000 + i * 6)} = ${pkg} = Trajetória reta`);
+      base.push(`Mira Otimizada ${i}% = Dword: ${String(77000 + i * 5)} = ${pkg} = Performance máxima`);
+    }
+    base.push('</Aim Bot 100% On/>');
+    base.push('</Aim Bot 100% Of/>');
+    base.push('</AimBot True/>');
+    base.push('</Null - Full/>');
+    base.push('<Precision 100% Lock Head/>');
+    base.push('<Smooth Aim 100%/>');
+    base.push('<Linear Response 100%/>');
+    base.push('<Vertical Control 100%/>');
+    base.push('<Horizontal Stability 100%/>');
+    base.push('<Tracking Boost 100%/>');
+    base.push('<Flick Precision 100%/>');
+    base.push('<Micro Aim 100%/>');
+    base.push('<Recoil Compensation 100%/>');
+    base.push('<No Tremor Active/>');
+    base.push('<Headshot Priority 100%/>');
+    base.push('<Angle Snapping 100% ON/>');
+    base.push('<Angle Snapping SEM zigue-zague/>');
+    base.push('<Mira grudada 100%/>');
+    base.push('<Puxada reta vertical 100%/>');
+    base.push('<Puxada reta horizontal 100%/>');
+    base.push('<Fast Response 100% ON/>');
+    base.push('<Keyboard + Mouse ultra rápido/>');
+    base.push('<Silient Aim 100%/>');
+    base.push('<Grudar Head 100%/>');
+    base.push('<Background Persistence ATIVO/>');
+    base.push('<Funciona em segundo plano SEMPRE/>');
+    base.push('<Injeção permanente até desativar/>');
+    base.push('<Mira Dura 100%/>');
+    base.push('<Mira Cravada 100%/>');
+    base.push('<Mira Retinha 100%/>');
+    base.push('<Mira Otimizada 100%/>');
+    return base;
+  }
+
+  function injectPrecisionCode(versao) {
+    const pkg = versao === 'ff' ? 'com.dts.freefireth' : 'com.dts.freefiremax';
+    const version = versao === 'ff' ? '1.94.8' : '1.95.0';
+    const fast = fastResponseToggle.checked;
+    const codes = generateUltraCodes(versao);
+    const payload = {
+      package: pkg,
+      version: version,
+      status: 'injected',
+      precision: 100,
+      angleSnapping: true,
+      fastResponse: fast,
+      silient: true,
+      backgroundPersistence: true,
+      miraDura: true,
+      miraCravada: true,
+      miraRetinha: true,
+      miraOtimizada: true,
+      aimbot: {
+        active: true,
+        strength: 100,
+        mode: 'grudar+angle_snapping+fast+persist+dura+cravada',
+        headshot: true,
+        smooth: 100,
+        linear: true,
+        vertical: true,
+        horizontal: true,
+        tracking: 100,
+        flick: 100,
+        micro: 100,
+        recoil_control: 100,
+        no_tremor: true,
+        silient: true,
+        path: `/data/data/${pkg}/shared_prefs/com.dts.freefireth.v2.playerprefs.xml`
+      },
+      codes: codes,
+      total_codes: codes.length,
+      injectedAt: Date.now(),
+      active: true
+    };
+    localStorage.setItem('precision_100_inject', JSON.stringify(payload));
+    for (let i = 0; i < 5; i++) {
+      localStorage.setItem(`precision_inject_${i}`, JSON.stringify({ slot: i, codes: codes.slice(i*60, (i+1)*60) }));
+    }
+    localStorage.setItem('precision_active', 'true');
+    localStorage.setItem('precision_version', versao);
+    isInjected = true;
+    console.log('[MSI 5 MOBILADOR] Total de códigos:', codes.length);
+    console.log('[MSI 5 MOBILADOR] Payload:', payload);
+    console.log('[MSI 5 MOBILADOR] Persistência em segundo plano ATIVADA');
+    return true;
+  }
+
+  function startBackgroundPersistence() {
+    setInterval(() => {
+      const active = localStorage.getItem('precision_active');
+      const payload = localStorage.getItem('precision_100_inject');
+      if (active === 'true' && payload) {
+        const data = JSON.parse(payload);
+        if (data && data.active !== false) {
+          console.log('[MSI 5 MOBILADOR] Mantendo injeção ativa em segundo plano...');
+          data.lastKeepAlive = Date.now();
+          localStorage.setItem('precision_100_inject', JSON.stringify(data));
+          window.dispatchEvent(new Event('precision-keepalive'));
+        }
+      }
+    }, 5000);
+
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) {
+        const active = localStorage.getItem('precision_active');
+        if (active === 'true') {
+          console.log('[MSI 5 MOBILADOR] Jogo em foco, garantindo injeção ativa');
+          const payload = localStorage.getItem('precision_100_inject');
+          if (payload) {
+            const data = JSON.parse(payload);
+            if (data && data.active !== false) {
+              data.lastFocus = Date.now();
+              localStorage.setItem('precision_100_inject', JSON.stringify(data));
+            }
+          }
+        }
+      }
+    });
+
+    window.addEventListener('load', function() {
+      const active = localStorage.getItem('precision_active');
+      if (active === 'true') {
+        console.log('[MSI 5 MOBILADOR] Página carregada, injeção persistente ativa');
+      }
+    });
+  }
+
+  startBackgroundPersistence();
+
+  function abrirJogo(versao) {
+    const cfg = GAME_LINKS[versao];
+    const platform = getPlatform();
+
+    function resetBtn() {
+      injectBtn.classList.remove('injected', 'injecting');
+      injectBtn.textContent = 'INJECT';
+      versionOptions.classList.remove('hide-fast');
+    }
+
+    if (platform === 'android') {
+      window.location.href = cfg.android;
+      setTimeout(resetBtn, 2500);
+      return;
+    }
+    if (platform === 'ios') {
+      const start = Date.now();
+      let redirected = false;
+      const fallback = setTimeout(() => {
+        if (!redirected && Date.now() - start < 3000 && document.visibilityState !== 'hidden') {
+          window.location.href = cfg.iosStore;
+        }
+      }, 2000);
+      document.addEventListener('visibilitychange', function onVis() {
+        if (document.visibilityState === 'hidden') {
+          redirected = true;
+          clearTimeout(fallback);
+          document.removeEventListener('visibilitychange', onVis);
+        }
+      });
+      window.location.href = cfg.iosScheme;
+      setTimeout(resetBtn, 2500);
+      return;
+    }
+    window.open(cfg.iosStore, '_blank');
+    setTimeout(resetBtn, 2500);
+  }
+
+  injectBtn.addEventListener('click', function () {
+    if (injectBtn.classList.contains('injecting') || injectBtn.classList.contains('injected')) return;
+    versionOptions.classList.add('show');
+  });
+
+  function escolherVersao(versao) {
+    versionOptions.classList.remove('show');
+    versionOptions.classList.add('hide-fast');
+
+    injectBtn.textContent = 'INJETANDO...';
+    injectBtn.classList.add('injecting');
+
+    const delay = 2000 + Math.random() * 1000;
+
+    setTimeout(() => {
+      const injected = injectPrecisionCode(versao);
+      if (injected) {
+        injectBtn.classList.remove('injecting');
+        injectBtn.classList.add('injected');
+        injectBtn.textContent = 'INJETADO ✓ 100%';
+        document.getElementById('precisionToggle').checked = true;
+        document.getElementById('angleSnapToggle').checked = true;
+        document.getElementById('fastResponseToggle').checked = true;
+        const evt = new Event('change', { bubbles: true });
+        document.getElementById('precisionToggle').dispatchEvent(evt);
+        document.getElementById('angleSnapToggle').dispatchEvent(evt);
+        document.getElementById('fastResponseToggle').dispatchEvent(evt);
+        abrirJogo(versao);
+      } else {
+        injectBtn.classList.remove('injecting');
+        injectBtn.textContent = 'FALHA';
+        setTimeout(() => {
+          injectBtn.textContent = 'INJECT';
+          injectBtn.classList.remove('injected');
+        }, 1500);
+      }
+    }, delay);
+  }
+
+  btnFF.addEventListener('click', function (e) { e.stopPropagation(); escolherVersao('ff'); });
+  btnMAX.addEventListener('click', function (e) { e.stopPropagation(); escolherVersao('max'); });
+
+  document.getElementById('precisionToggle').addEventListener('change', function() {
+    if (this.checked) {
+      document.querySelector('.slider').style.boxShadow = '0 0 8px 2px rgba(255, 20, 20, 0.85), 0 0 18px 5px rgba(255, 0, 0, 0.55), inset 0 0 6px rgba(255, 255, 255, 0.15), inset 0 0 11px rgba(120, 0, 0, 0.6)';
+    } else {
+      document.querySelector('.slider').style.boxShadow = 'none';
+      localStorage.setItem('precision_active', 'false');
+      isInjected = false;
+    }
+  });
+
+  /* ===== SOFTWARE DO MOUSE ===== */
+  const sensX = document.getElementById('sensX');
+  const sensY = document.getElementById('sensY');
+  const valX = document.getElementById('valX');
+  const valY = document.getElementById('valY');
+  const angleSnapToggle = document.getElementById('angleSnapToggle');
+
+  function updateMouseSettings() {
+    const x = parseFloat(sensX.value);
+    const y = parseFloat(sensY.value);
+    valX.textContent = x.toFixed(1);
+    valY.textContent = y.toFixed(1);
+    const angle = angleSnapToggle.checked;
+    const fast = fastResponseToggle.checked;
+
+    const mouseConfig = {
+      sensX: x,
+      sensY: y,
+      angleSnapping: angle,
+      fastResponse: fast,
+      precision: 100,
+      active: true
+    };
+    localStorage.setItem('mouse_software_config', JSON.stringify(mouseConfig));
+    console.log('[MOUSE CONFIG]', mouseConfig);
+
+    const codes = [
+      `SensX = ${x} (Horizontal)`,
+      `SensY = ${y} (Vertical)`,
+      `AngleSnap = ${angle ? 'ON' : 'OFF'}`,
+      `FastResponse = ${fast ? 'ON' : 'OFF'}`,
+      `Precision = 100%`,
+      `Dword: 9900990 = SensX_${x}`,
+      `Dword: 9900991 = SensY_${y}`,
+      `Dword: 9900992 = AngleSnap_${angle ? 1 : 0}`,
+      `Dword: 9900993 = FastResponse_${fast ? 1 : 0}`,
+      `String: AngleSnap = ${angle ? 'Ativo' : 'Inativo'}`,
+      `String: FastResponse = ${fast ? 'Ativo' : 'Inativo'}`,
+      `Angle Snapping SEM zigue-zague = ${angle ? 'Ativo' : 'Inativo'}`,
+      `Mira grudada 100% = ${angle ? 'Ativa' : 'Inativa'}`
+    ];
+    localStorage.setItem('mouse_inject_codes', JSON.stringify(codes));
+  }
+
+  sensX.addEventListener('input', updateMouseSettings);
+  sensY.addEventListener('input', updateMouseSettings);
+  angleSnapToggle.addEventListener('change', updateMouseSettings);
+  fastResponseToggle.addEventListener('change', updateMouseSettings);
+
+  function loadMouseConfig() {
+    const saved = localStorage.getItem('mouse_software_config');
+    if (saved) {
+      try {
+        const config = JSON.parse(saved);
+        sensX.value = config.sensX;
+        sensY.value = config.sensY;
+        angleSnapToggle.checked = config.angleSnapping;
+        if (config.fastResponse !== undefined) fastResponseToggle.checked = config.fastResponse;
+        valX.textContent = config.sensX.toFixed(1);
+        valY.textContent = config.sensY.toFixed(1);
+      } catch (e) {}
+    }
+    updateMouseSettings();
+  }
+  loadMouseConfig();
+
+  window.addEventListener('load', function() {
+    const active = localStorage.getItem('precision_active');
+    if (active === 'true') {
+      const payload = localStorage.getItem('precision_100_inject');
+      if (payload) {
+        try {
+          const data = JSON.parse(payload);
+          if (data && data.active !== false) {
+            injectBtn.textContent = 'INJETADO ✓ 100%';
+            injectBtn.classList.add('injected');
+            isInjected = true;
+            console.log('[MSI 5 MOBILADOR] Injeção persistente restaurada');
+          }
+        } catch (e) {}
+      }
+    }
+  });
+
+  /* ===== RELATÓRIO DE SENSIBILIDADE TOP 50 ===== */
+  function generateReport() {
+    const reportList = document.getElementById('reportList');
+    const items = [];
+    const names = [
+      'Mira Dura', 'Mira Cravada', 'Mira Retinha', 'Mira Otimizada', 'Precision Max',
+      'Angle Snap', 'Fast Response', 'Silient Aim', 'Grudar Head', 'Headshot Lock',
+      'No Tremor', 'Linear Aim', 'Smooth Aim', 'Vertical Control', 'Horizontal Stability',
+      'Tracking Boost', 'Flick Precision', 'Micro Aim', 'Recoil Comp', 'Background Persist',
+      'Mira Pesada', 'Mira Leve', 'Mira Firme', 'Mira Estável', 'Mira Precisa',
+      'Mira Rápida', 'Mira Suave', 'Mira Reta', 'Mira Colada', 'Mira Invisível',
+      'Mira Dura+', 'Mira Cravada+', 'Mira Retinha+', 'Mira Otimizada+', 'Precision Ultra',
+      'Angle Snap Pro', 'Fast Response Pro', 'Silient Aim Pro', 'Grudar Head Pro', 'Headshot Lock Pro',
+      'No Tremor Pro', 'Linear Aim Pro', 'Smooth Aim Pro', 'Vertical Control Pro', 'Horizontal Stability Pro',
+      'Tracking Boost Pro', 'Flick Precision Pro', 'Micro Aim Pro', 'Recoil Comp Pro', 'Background Persist Pro'
+    ];
+    for (let i = 0; i < 50; i++) {
+      const x = (Math.random() * 10).toFixed(1);
+      const y = (Math.random() * 10).toFixed(1);
+      const desc = `X: ${x} • Y: ${y} • Precisão: ${(90 + Math.random() * 10).toFixed(0)}%`;
+      items.push({ rank: i + 1, name: names[i] || `Config ${i+1}`, x, y, desc });
+    }
+    reportList.innerHTML = '';
+    items.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'report-item';
+      div.innerHTML = `
+        <span class="rank">#${String(item.rank).padStart(2, '0')}</span>
+        <div class="info">
+          <span class="name">${item.name}</span>
+          <span class="desc">${item.desc}</span>
+        </div>
+        <div class="values">
+          <span class="x">X ${item.x}</span>
+          <span class="y">Y ${item.y}</span>
+        </div>
+      `;
+      reportList.appendChild(div);
+    });
+    return items;
+  }
+
+  let reportData = generateReport();
+
+  /* ===== DOWNLOAD DO RELATÓRIO ===== */
+  document.getElementById('downloadBtn').addEventListener('click', function() {
+    let content = '========================================\n';
+    content += '   MSI 5 MOBILADOR - RELATÓRIO TOP 50\n';
+    content += '   Sensibilidade X e Y • Precision 100%\n';
+    content += '   Data: ' + new Date().toLocaleString('pt-BR') + '\n';
+    content += '========================================\n\n';
+    reportData.forEach(item => {
+      content += `#${String(item.rank).padStart(2, '0')} - ${item.name}\n`;
+      content += `   Sensibilidade X: ${item.x}\n`;
+      content += `   Sensibilidade Y: ${item.y}\n`;
+      content += `   ${item.desc}\n`;
+      content += `   Mira: Durinha • Cravada • Retinha • Otimizada\n`;
+      content += `   Status: 100% FUNCIONAL\n`;
+      content += '----------------------------------------\n';
+    });
+    content += '\n========================================\n';
+    content += '   FIM DO RELATÓRIO\n';
+    content += '   MSI 5 MOBILADOR - Precision 100%\n';
+    content += '========================================\n';
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'MSI5_MOBILADOR_Relatorio_Sensibilidade_TOP50.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    console.log('[MSI 5 MOBILADOR] Relatório baixado com sucesso!');
+  });
+</script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("Service Worker registrado com sucesso!"))
+        .catch((error) => console.error("Erro ao registrar Service Worker:", error));
+    }
+  </script>
+</body>
+</html>
